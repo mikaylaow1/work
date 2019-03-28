@@ -1,0 +1,178 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+//function prototypes
+void Menu();
+void Insert(int arr[], int, int, int);
+void Delete(int arr[], int, int);
+void Reverse(int arr[], int);
+void TimesWhat(int arr[], int, int);
+int SumsOdds(const int arr[], int, int);
+void PrintArray (const int arr[], const int size);
+void FillArray(int arr[], const int size);
+
+int main()
+{
+    char menuSelection;
+    int userValue, index, oddNums;
+    const int SIZE = 15;
+
+    int arr[SIZE] = {0};
+
+    Menu();
+   
+  do{
+      cout << "\nEnter your menu selection: ";
+      cin >> menuSelection;
+
+      switch(menuSelection) {
+          case 'P':
+          case 'p':
+              PrintArray(arr, SIZE);
+              break;
+          case 'F':
+          case 'f':
+              FillArray(arr, SIZE);
+              break;
+          case 'I':
+          case 'i':
+              cout << "Enter value to insert: ";
+              cin >> userValue;
+              cout << "Enter index at which to insert: ";
+              cin >> index;
+              Insert(arr, SIZE, userValue, index);
+              PrintArray(arr, SIZE);
+              break;
+          case 'D':
+          case 'd':
+              cout << "Enter index of item to delete: ";
+              cin >> index;
+              Delete(arr, SIZE, index);
+              PrintArray(arr, SIZE);
+              break;
+          case 'R':
+          case 'r':
+              Reverse(arr, SIZE);
+              PrintArray(arr, SIZE);
+              break;
+          case 'T':
+          case 't':
+              cout << "What value should we multiply each element by? --> ";
+              cin >> userValue;
+              TimesWhat(arr, SIZE, userValue);
+              PrintArray(arr, SIZE);
+              break;
+          case 'S':
+          case 's':
+              cout << "How many odd numbers do you want to add?: ";
+              cin >> oddNums;
+                  if (oddNums > SIZE || oddNums == 0) {
+                      cout << "Invalid entry, try again > ";
+                      cin >> oddNums;
+                  } else
+                      cout << "The sum of the first " << oddNums << " odd values in the array is: "
+                           << SumsOdds(arr, SIZE, oddNums) << endl;
+                  break;
+
+          case 'M':
+          case 'm':
+              Menu();
+              break;
+          case 'Q':
+          case 'q':
+              PrintArray(arr,SIZE);
+              break;
+          default:
+              cout << "Invalid option, try again." << endl;
+              break;
+      }
+
+  }while(menuSelection != 'Q' && menuSelection != 'q');
+
+
+   return 0;
+}// end main()
+
+
+/* Add in the definitions of your own functions HERE */
+void Menu(){
+ cout <<"\t\t** Given features **" << endl;
+ cout << "P	\tPrint the array contents" << endl;
+ cout << "F	\tFill the array (user entry)" << endl;
+ cout << "\n\t\t** Function Tests **" << endl;
+ cout << "I\t\tInsert" << endl;
+ cout << "D\t\tDelete" << endl;
+ cout << "R\t\tReverse" << endl;
+ cout << "T\t\tTimesWhat" << endl;
+ cout << "S\t\tSumsOdds" << endl;
+ cout << "\nM\t\tPrint this menu" << endl;
+ cout << "Q\t\tQuit this program" << endl;
+}
+void Insert(int arr[], const int SIZE, int newValue, int index){
+    int temp;
+
+    if(index <= SIZE){
+    for(int i = index; i < SIZE; i++) {
+        temp = arr[i];
+        arr[i] = newValue;
+        newValue = temp;
+        }
+    }
+}
+void Delete(int arr[],  int SIZE, int index){
+
+        for (int i = index; i < SIZE - 1; i++) {
+             arr[i] = arr[i + 1];
+        }
+        arr[SIZE - 1] = 0;
+}
+void Reverse(int arr[], const int SIZE){
+    int temp;
+
+    for(int i = 0,j = SIZE - 1;i < SIZE/2; i++, j--) {
+        temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
+void TimesWhat(int arr[], const int SIZE, int multiplyValue){
+    for(int i = 0; i < SIZE; i++){
+            arr[i] = arr[i] * multiplyValue;
+    }
+
+}
+int SumsOdds(const int arr[], const int SIZE, int oddNums) {
+    int totalSum = 0;
+    int Counter = 1;
+    for (int i = 0; i < SIZE; i++){
+         if (arr[i] % 2 != 0 && Counter <= oddNums) {
+            totalSum += arr[i];
+            Counter++;
+        }
+    }
+    return totalSum;
+}
+
+
+//PrintArray Function
+//This function prints the contents of any integer array of any size separated by commas
+
+void PrintArray(const int arr[], const int size)
+{
+   cout << "\nThe array:\n { ";
+   for (int i = 0; i < size-1; i++)	// for loop, prints each item (not last due to comma handling)
+      cout << arr[i] << ", ";
+
+   cout << arr[size-1] << " }\n";	// prints last item , no comma
+}
+
+//FillArray Function 
+//Allows the user to enter data into any integer array of any size.
+void FillArray(int arr[], const int size)
+{
+   cout << "Please enter " << size << " integers to load into the array\n> ";
+
+   for (int i = 0; i < size; i++)
+	cin >> arr[i];		
+}
