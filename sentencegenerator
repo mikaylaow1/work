@@ -1,0 +1,48 @@
+#include <iostream>
+#include <cstring>
+#include <cctype>
+#include <ctime>
+using namespace std;
+
+
+int main() {
+
+//random selection based on time.
+    srand(time(NULL));
+
+//declaring string arrays and other variables.
+    const int size = 5;
+    string article[size] = {"the", "a", "one", "some", "any"};
+    string preposition[size] = {"to", "from", "over", "under", "on"};
+    string Nouns[size];
+    string Verbs[size];
+
+//prompt user for nouns & verbs and forces all lowercase.
+    cout << "Enter 5 nouns (lowercase): ";
+    for (int i = 0; i < size; i++){
+        cin >> Nouns[i];
+
+        for(int j = 0; j < Nouns[i].size(); j++){
+            Nouns[i][j] = tolower(Nouns[i][j]);
+         }
+    }
+    cout << "Enter 5 past tense verbs (lowercase): ";
+    for (int i = 0; i < size; i++){
+        cin >> Verbs[i];
+
+        for(int j = 0; j < Verbs[i].size(); j++){
+            Verbs[i][j] = tolower(Verbs[i][j]);
+        }
+    }
+//prints the list of sentences to the screen.
+    for (int i = 0; i <= 20; i++ ){
+//makes the first letter of the first word capitalized.
+        string capital = article[rand() % size];
+        capital[0] = toupper(capital[0]);
+        cout << capital + " " + Nouns[rand() % size] + " " + Verbs[rand() % size] + " " + preposition[rand() % 5] + " " +
+                article[rand() % size] +  " " + Nouns[rand() % size] + "." << endl;
+
+    }
+
+    return 0;
+}
