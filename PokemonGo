@@ -1,0 +1,213 @@
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+#include <ctime>
+#include <fstream>
+#include <iomanip>
+using namespace std;
+
+//function for the menu
+void Menu();
+void welcomeMessage();
+bool TotalBallCount(int, int, int);
+
+//structure containing the required fields
+struct Pokemon {
+    int PokeNum;
+    string Name;
+    string type;
+    int catchPercent;
+    int numCaught = 0;
+    int numSeen = 0;
+};
+
+
+int main() {
+
+    srand(time(NULL));
+
+//prompts user for file name at beginning
+    char selection;
+    double TotalCaught = 0.0, TotalSeen = 0.0;
+    int catchPercent = 0, SIZE, ballSelection;
+    int PokeBall = 10, GreatBall = 10, UltraBall = 10;
+    string fileName;
+
+    cout << "Enter the name of the file to open: ";
+    cin >> fileName;
+
+//opening text file
+    ifstream fileIn;
+    fileIn.open(fileName);
+
+//testing if file is good/bad. Seen from Melina's in class notes
+    while (!fileIn) {
+        cout << "Bad file, try again. " << endl;
+        cout << "Enter the name of the file to open: ";
+        cin >> fileName;
+        fileIn.open(fileName);
+    }
+
+    fileIn >> SIZE;
+
+//array of pokemon
+    Pokemon * PokemonArr = new Pokemon[SIZE];
+    for(int i = 0; i < SIZE; i++){
+        fileIn >> PokemonArr[i].PokeNum;
+        fileIn >> PokemonArr[i].Name;
+        fileIn >> PokemonArr[i].type;
+        fileIn >> PokemonArr[i].catchPercent;
+    }
+//closes the file when finished
+    fileIn.close();
+
+//welcomes the user
+   welcomeMessage();
+
+    do {
+//calls the  menu to display messages to the user and collects selection
+        Menu();
+        cout << "\nSelection >  ";
+        cin >> selection;
+        int RandomGen = rand() % SIZE;
+        int RandomCatchGen = rand() % 100 + 1;
+
+//processes the users selection from the menu and goes to that case
+        switch (selection) {
+            case '1':
+                cout << "\nA wild " << (PokemonArr[RandomGen]).Name << " has appeared!" << endl;
+                cout << "\nChoose a ball to throw: " << endl;
+                cout << "1 - Poke Ball (You have: " << PokeBall << ")" << endl;
+                cout << "2 - Great Ball (You have: " << GreatBall << ")" << endl;
+                cout << "3 - Ultra Ball (You have: " << UltraBall << ")" << endl;
+                cout << "Selection >  ";
+                cin >> ballSelection;
+//calculates and runs the players ball selection and catch rate
+                if(PokeBall == 0 || GreatBall == 0 || UltraBall == 0){
+                    cout << "You have none of them!" << endl;
+                    cout << "Selection >  ";
+                    cin >> ballSelection;
+                }
+                if (ballSelection == 1 && PokeBall != 0) {
+                    cout << "Threw a Poke Ball!" << endl;
+                    catchPercent = ((PokemonArr[RandomGen]).catchPercent);
+                    PokeBall--;
+                } else if (ballSelection == 2 && GreatBall != 0) {
+                    cout << "Threw a Great Ball!" << endl;
+                    catchPercent = ((PokemonArr[RandomGen]).catchPercent) + 20;
+                    GreatBall--;
+                } else if (ballSelection == 3 && UltraBall != 0) {
+                    cout << "Threw a Ultra Ball!" << endl;
+                    catchPercent = ((PokemonArr[RandomGen]).catchPercent) + 40;
+                    UltraBall--;
+                } else {
+                    cout << "Invalid ball selection, try again" << endl;
+                    cout << "Ball selection > ";
+                    cin >> selection;
+                }
+//keeps count of seen and caught pokemon
+                if (RandomCatchGen <= catchPercent) {
+                    cout << "Congratulations! You caught " << (PokemonArr[RandomGen]).Name << endl;
+                    PokemonArr[RandomGen].numSeen++;
+                    TotalSeen++;
+                    PokemonArr[RandomGen].numCaught++;
+                    TotalCaught++;
+                } else {
+                    cout << (PokemonArr[RandomGen]).Name << " ran away. :-(" << endl;
+                    PokemonArr[RandomGen].numSeen++;
+                    TotalSeen++;
+                }
+                break;
+//prints the user's pokedex
+            case '2':
+                cout << "\nPOKEDEX: " << endl;
+                for (int i = 0; i < SIZE; i++) {
+                    std::cout << std::left;
+                    cout << "\nno ";
+                    cout.width(5);
+                    cout << PokemonArr[i].PokeNum;
+                    cout.width(15);
+                    cout << PokemonArr[i].Name;
+                    cout << "Seen: ";
+                    cout << PokemonArr[i].numSeen;
+                    cout << " Caught: ";
+                    cout << PokemonArr[i].numCaught;
+                }
+
+                cout << "\nTotal Pokemon Caught: " << TotalCaught;
+                cout << " Total Pokemon Seen: " << TotalSeen;
+                cout << fixed << showpoint << setprecision(2);
+                cout << "\nOverall Catch Rate: " << ((TotalCaught / TotalSeen) * 100.00) << "%";
+                break;
+//prints the user's inventory
+            case '3':
+                cout << "\nYou have: " << endl;
+                cout << PokeBall << " PokeBalls" << endl;
+                cout << GreatBall << " GreatBalls" << endl;
+                cout << UltraBall << " UltraBalls" << endl;
+                break;
+//quits the game
+            case 'Q':
+            case 'q':
+                cout << "Final Stats: " << endl;
+                cout << "\nPOKEDEX: ";
+                for (int i = 0; i < SIZE; i++) {
+                    std::cout << std::left;
+                    cout << "\nno ";
+                    cout.width(5);
+                    cout << PokemonArr[i].PokeNum;
+                    cout.width(15);
+                    cout << PokemonArr[i].Name;
+                    cout << "Seen: ";
+                    cout << PokemonArr[i].numSeen;
+                    cout << " Caught: ";
+                    cout << PokemonArr[i].numCaught;
+                }
+
+                cout << "\nTotal Pokemon Caught: " << TotalCaught;
+                cout << " Total Pokemon Seen: " << TotalSeen;
+                cout << fixed << showpoint << setprecision(2);
+                cout << "\nOverall Catch Rate: " << ((TotalCaught / TotalSeen) * 100.00) << "%";
+                break;
+//stops the user from inputting bad selections
+            default:
+                cout << "Invalid Entry. Try again." << endl;
+                break;
+        }
+
+    }while(selection != 'Q' && selection != 'q' && TotalBallCount(PokeBall,GreatBall, UltraBall));
+
+    return 0;
+}
+
+//menu function definition
+void Menu() {
+    cout << "\n1 - Hunt for Pokemon!" << endl;
+    cout << "2 - Pokedex Statistics." << endl;
+    cout << "3 - Print Inventory." << endl;
+    cout << "Q - Quit" << endl;
+}
+//collects name and prints welcome message
+void welcomeMessage(){
+    char userName[40];
+    cout << "What's your name, trainer? > ";
+    cin.ignore();
+    cin.getline(userName, 40);
+    cout << "\nWelcome, " << userName << ", to the COP3014 Safari Zone! " << endl;
+    cout << "You'll have 30 chances to catch Pokemon, make them count! " << endl;
+    cout << "The game will end once you run out of balls or if you choose to quit early."<< endl;
+}
+//function definition that keeps count of total ball count
+bool TotalBallCount(int Pballs, int Gballs, int Uballs) {
+
+    if (0 <= Pballs && Pballs <= 10) {
+        return true;
+    }
+    if (0 <= Gballs && Gballs <= 10) {
+        return true;
+    }
+    if (0 <= Uballs && Uballs <= 10) {
+        return true;
+    }
+}
